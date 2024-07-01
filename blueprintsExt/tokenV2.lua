@@ -45,8 +45,8 @@ local ao = require('ao')
     What is new?
     1- Extracted the transfer logic from the transfer handler to re-use the transfer logic in the "TransferFrom" handler.
     2- Implemented the "Approve" handler
-    3- Imemented the "Approval" handler
-    3- Imemented the "Approvals" handler
+    3- Implemented the "Approval" handler
+    3- Implemented the "Approvals" handler
     4- Implemented the "TransferFrom" handler
 
     Summary:
@@ -308,7 +308,7 @@ Handlers.add('transferFrom', Handlers.utils.hasMatchingTag('Action', 'TransferFr
 
   end
 
-  transfer(msg.Allower, msg.From, msg.Quantity, msg);
+  transfer(msg.Allower, msg.Recipient, msg.Quantity, msg);
 end)
 
 --[[
