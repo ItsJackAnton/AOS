@@ -221,6 +221,12 @@ Handlers.add('mint', Handlers.utils.hasMatchingTag('Action', 'Mint'), function(m
     -- Add tokens to the token pool, according to Quantity
     Balances[msg.From] = utils.add(Balances[msg.From], msg.Quantity)
     TotalSupply = utils.add(TotalSupply, msg.Quantity)
+
+    -- Store transaction
+    local newTxHeight = #Transactions + 1;
+    local tx = { recipient = msg.From, quantity = msg.Quantity, blockHeight = msg['Block-Height'], txHeight =  newTxHeight}
+    Transactions[newTxHeight] = tx;
+
     ao.send({
       Target = msg.From,
       Data = Colors.gray .. "Successfully minted " .. Colors.blue .. msg.Quantity .. Colors.reset
