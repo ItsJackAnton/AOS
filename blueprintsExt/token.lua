@@ -2,10 +2,6 @@
   Author: ItsJackAnton
   Twitter: ItsJackAnton
   Discord: ItsJackAnton
-
-  Made: 30/Jun/2024
-
-  Description: AO Blueprint Token Extension V2.
 ]]--
 
 local bint = require('.bint')(256)
@@ -153,7 +149,7 @@ Handlers.add('transfer', Handlers.utils.hasMatchingTag('Action', 'Transfer'), fu
 
     -- Store transaction
     local newTxHeight = #Transactions + 1;
-    local tx = { from = msg.From, recipient = msg.Recipient, quantity = msg.Quantity, blockHeight = msg['Block-Height'], txHeight =  newTxHeight}
+    local tx = { from = msg.From, recipient = msg.Recipient, quantity = msg.Quantity, blockHeight = msg['Block-Height'], txHeight =  newTxHeight, ['Message-Id'] = msg.Id }
     Transactions[newTxHeight] = tx;
 
     --[[
@@ -224,7 +220,7 @@ Handlers.add('mint', Handlers.utils.hasMatchingTag('Action', 'Mint'), function(m
 
     -- Store transaction
     local newTxHeight = #Transactions + 1;
-    local tx = { recipient = msg.From, quantity = msg.Quantity, blockHeight = msg['Block-Height'], txHeight =  newTxHeight}
+    local tx = { recipient = msg.From, quantity = msg.Quantity, blockHeight = msg['Block-Height'], txHeight =  newTxHeight, ['Message-Id'] = msg.Id }
     Transactions[newTxHeight] = tx;
 
     ao.send({
@@ -266,6 +262,11 @@ Handlers.add('burn', Handlers.utils.hasMatchingTag('Action', 'Burn'), function(m
   Balances[msg.From] = utils.subtract(Balances[msg.From], msg.Quantity)
   TotalSupply = utils.subtract(TotalSupply, msg.Quantity)
 
+  -- Store transaction
+  local newTxHeight = #Transactions + 1;
+  local tx = { from = msg.From, quantity = msg.Quantity, blockHeight = msg['Block-Height'], txHeight =  newTxHeight, ['Message-Id'] = msg.Id }
+  Transactions[newTxHeight] = tx;
+
   ao.send({
     Target = msg.From,
     Data = Colors.gray .. "Successfully burned " .. Colors.blue .. msg.Quantity .. Colors.reset
@@ -276,7 +277,6 @@ end)
  Transactions
 ]] --
 Handlers.add('transactions', Handlers.utils.hasMatchingTag('Action', 'Transactions'), function(msg)
-
 
   local txHash = msg.TxHeight or #Transactions;
   local count = msg.Count or 1;
